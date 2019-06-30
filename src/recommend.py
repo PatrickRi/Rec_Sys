@@ -22,13 +22,16 @@ def main(data_path: str, recommender: str):
     test_csv = data_directory.joinpath('test.csv')
     subm_csv = data_directory.joinpath('submission_' + recommender + '.csv')
 
+    # reading data
     print(f"Reading {train_csv} ...")
     df_train = pd.read_csv(train_csv)
     print(f"Reading {test_csv} ...")
     df_test = pd.read_csv(test_csv)
+
     print("Identify target rows...")
     df_target = f.get_submission_target(df_test)
 
+    # select calculation
     if recommender == 'baseline':
         df_out = bf.calc_recommendation(df_train, df_target)
     elif recommender == 'first_impression':
@@ -39,6 +42,7 @@ def main(data_path: str, recommender: str):
     if not verification.verify(df_out, df_test):
         raise Exception('submission not valid')
 
+    # writing data
     print(f"Writing {subm_csv}...")
     df_out.to_csv(subm_csv, index=False)
 

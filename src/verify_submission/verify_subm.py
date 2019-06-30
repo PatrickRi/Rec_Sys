@@ -11,7 +11,8 @@ default_data_directory = current_directory.joinpath('..', '..', 'data')
 
 @click.command()
 @click.option('--data-path', default=None, help='Directory for the CSV files')
-@click.option('--submission-file', default='submission_popular.csv', help='Submission CSV file')
+#  @click.option('--submission-file', default='submission_popular.csv', help='Submission CSV file')
+@click.option('--submission-file', default='submission_first_impression.csv', help='Submission CSV file')
 @click.option('--test-file', default='test.csv', help='Test CSV file')
 def main(data_path, submission_file, test_file):
     # calculate path to files
@@ -19,8 +20,9 @@ def main(data_path, submission_file, test_file):
     test_csv = data_directory.joinpath(test_file)
     subm_csv = data_directory.joinpath(submission_file)
 
-    print('Reading files...')
+    print(f"Reading {subm_csv} ...")
     df_subm = pd.read_csv(subm_csv)
+    print(f"Reading {test_csv} ...")
     df_test = pd.read_csv(test_csv)
 
     if f.verify(df_subm, df_test):

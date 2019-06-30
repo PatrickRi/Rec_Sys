@@ -1,3 +1,4 @@
+# provieded from group 3 edited by group 10
 from pathlib import Path
 
 import click
@@ -19,18 +20,22 @@ def main(data_path, test_file):
     gt_csv = data_directory.joinpath('ground_truth.csv')
     new_test_csv = data_directory.joinpath('new_test_data.csv')
 
-    print('Reading files...')
+    print(f"Reading {test_csv} ...")
     df_test = pd.read_csv(test_csv)
+
+    # do masking
     mask_click_out = df_test["action_type"] == "clickout item"
     df_clicks = df_test[mask_click_out]
 
     mask_ground_truth = df_clicks["reference"].notnull()
     df_gt = df_clicks[mask_ground_truth]
 
+    print(f"Writing {gt_csv}...")
     df_gt.to_csv(gt_csv, index=False)
 
     df_gt.loc[:, "reference"] = np.nan
 
+    print(f"Writing {new_test_csv}...")
     df_gt.to_csv(new_test_csv, index=False)
 
     print('finished')

@@ -44,11 +44,11 @@ def get_reciprocal_ranks(ps):
 def score_submissions(subm_csv, gt_csv, objective_function):
     """Score submissions with given objective function."""
 
-    print(f"Reading ground truth data {gt_csv} ...")
-    df_gt = read_into_df(gt_csv)
-
     print(f"Reading submission data {subm_csv} ...")
     df_subm = read_into_df(subm_csv)
+
+    print(f"Reading ground truth data {gt_csv} ...")
+    df_gt = read_into_df(gt_csv)
 
     # create dataframe containing the ground truth to target rows
     cols = ['reference', 'impressions', 'prices']
@@ -61,6 +61,7 @@ def score_submissions(subm_csv, gt_csv, objective_function):
         df_subm_with_key, 'item_recommendations', 'item_recommendations'
     )
 
+    print("before scoring df subm", df_subm_with_key)
     # score each row
     df_subm_with_key['score'] = df_subm_with_key.apply(objective_function, axis=1)
     mrr = df_subm_with_key.score.mean()
