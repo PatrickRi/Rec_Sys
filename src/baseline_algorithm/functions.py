@@ -2,7 +2,6 @@ import math
 import pandas as pd
 import numpy as np
 
-
 GR_COLS = ["user_id", "session_id", "timestamp", "step"]
 
 
@@ -22,10 +21,10 @@ def get_popularity(df):
     df_clicks = df[mask]
     df_item_clicks = (
         df_clicks
-        .groupby("reference")
-        .size()
-        .reset_index(name="n_clicks")
-        .transform(lambda x: x.astype(int))
+            .groupby("reference")
+            .size()
+            .reset_index(name="n_clicks")
+            .transform(lambda x: x.astype(int))
     )
 
     return df_item_clicks
@@ -66,38 +65,43 @@ def group_concat(df, gr_cols, col_concat):
 
     df_out = (
         df
-        .groupby(gr_cols)[col_concat]
-        .apply(lambda x: ' '.join(x))
-        .to_frame()
-        .reset_index()
+            .groupby(gr_cols)[col_concat]
+            .apply(lambda x: ' '.join(x))
+            .to_frame()
+            .reset_index()
     )
 
     return df_out
 
 
-def calc_recommendation(df_expl, df_pop):
+def calc_recommendation(df_train: pd.DataFrame, df_target: pd.DataFrame) -> pd.DataFrame:
     """Calculate recommendations based on popularity of items.
 
     The final data frame will have an impression list sorted according to the number of clicks per item in a reference data frame.
 
-    :param df_expl: Data frame with exploded impression list
-    :param df_pop: Data frame with items and number of clicks
+    :param df_train: Data frame with training data
+    :param df_target: Data frame with target
     :return: Data frame with sorted impression list according to popularity in df_pop
     """
+    print("Get popular items...")
+    df_pop = get_popularity(df_train)
+
+    print("Get recommendations...")
+    df_expl = explode(df_target, "impressions")
 
     df_expl_clicks = (
         df_expl[GR_COLS + ["impressions"]]
-        .merge(df_pop,
-               left_on="impressions",
-               right_on="reference",
-               how="left")
+            .merge(df_pop,
+                   left_on="impressions",
+                   right_on="reference",
+                   how="left")
     )
 
     df_out = (
         df_expl_clicks
-        .assign(impressions=lambda x: x["impressions"].apply(str))
-        .sort_values(GR_COLS + ["n_clicks"],
-                     ascending=[True, True, True, True, False])
+            .assign(impressions=lambda x: x["impressions"].apply(str))
+            .sort_values(GR_COLS + ["n_clicks"],
+                         ascending=[True, True, True, True, False])
     )
 
     df_out = group_concat(df_out, GR_COLS, "impressions")

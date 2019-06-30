@@ -1,3 +1,5 @@
+import pandas as pd
+
 SUBMISSION_COLUMNS = {'user_id', 'session_id', 'timestamp',
                       'step', 'item_recommendations'}
 
@@ -11,13 +13,13 @@ def get_test_session_set(df_test):
     return test_session_set
 
 
-def check_passed(check=True):
+def check_passed(check=False):
     """Print result of check."""
 
     if check:
         print('> check passed')
     else:
-        print('x check failed')
+        raise Exception('check failed')
 
 
 def check_duplicates(df):
@@ -44,3 +46,22 @@ def check_sessions(df_subm, df_test):
     check_sess = (set_test_sessions == set_subm_sessions)
 
     return check_sess
+
+
+def verify(df_subm: pd.DataFrame, df_test: pd.DataFrame) -> bool:
+    print('Checking for required columns in the submission file...')
+    check_cols = check_columns(df_subm)
+    check_passed(check_cols)
+
+    print('Checking for duplicate sessions in the submission file...')
+    check_dupl = check_duplicates(df_subm)
+    check_passed(check_dupl)
+
+    print('Checking that all the required sessions are present in submission...')
+    check_sess = check_sessions(df_subm, df_test)
+    check_passed(check_sess)
+
+    if all([check_cols, check_dupl, check_sess]):
+        return True
+    else:
+        return False
