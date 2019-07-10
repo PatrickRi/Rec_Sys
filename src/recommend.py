@@ -7,6 +7,7 @@ import utils as f
 import verify_submission.functions as verification
 import baseline_algorithm.functions as bf
 import first_impression.first_impression as fimpr
+import price_ordered.price_ordered as cheapest
 
 current_directory = Path(__file__).absolute().parent
 default_data_directory = current_directory.joinpath('..', 'data')
@@ -33,6 +34,8 @@ def main(data_path: str, recommender: str):
         df_out = bf.calc_recommendation(df_train, df_target)
     elif recommender == 'first_impression':
         df_out = fimpr.calc_recommendation(df_train, df_target)
+    elif recommender == 'cheapest':
+        df_out = cheapest.calc_recommendation(df_train, df_target)
     else:
         raise Exception('algorithm ' + recommender + ' not implemented')
 
