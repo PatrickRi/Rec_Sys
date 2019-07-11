@@ -33,29 +33,15 @@ def main(data_path, original_train_csv):
     create_ground_truth(data_path, test_split_csv)
 
     # Remove last clickout reference of user/session combinations
-    # TODO: reeeaaally slow ...
-    mask = test["action_type"] == "clickout item"
-    masked_test = test[mask]
+    test.loc[(~test.duplicated(["user_id", "session_id"], keep="last")) & (
+                test.action_type == "clickout item"), "reference"] = ""
 
-    last_row = None
-    last_index = None
-
-    for index, row in masked_test.iterrows():
-        if last_row is not None:
-            if last_row["user_id"] == row["user_id"] and last_row["session_id"] == row["session_id"]:
-                pass
-            else:
-                test.loc[last_index, "reference"] = ""
-
-        last_row = row
-        last_index = index
-
-    # test_split_ref_removed_csv = data_directory.joinpath('test_split_reference_removed.csv')
     test.to_csv(test_split_csv, index=False)
 
 
 # Based on the script provided by group 3
 def create_ground_truth(data_path, test_file):
+    # TODO: Ground truth only needed for clickout actions with missing references
 
     # calculate path to files
     data_directory = Path(data_path) if data_path else default_data_directory
