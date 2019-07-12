@@ -11,6 +11,7 @@ def sort_by_interaction(row, lookup_series: pd.Series):
     user_session = row['user_id'] + row['session_id']
     if user_session not in lookup_series.index:
         recommendations = str(impressions).strip('[]')
+        recommendations = " ".join(recommendations.split())
         return recommendations
     interactions = lookup_series[user_session]
     recommendations = []
@@ -24,6 +25,7 @@ def sort_by_interaction(row, lookup_series: pd.Series):
             recommendations.append(impr)
     # list of recommendations to single string
     recommendations = str(recommendations).strip('[]')
+    recommendations = " ".join(recommendations.split())
     return recommendations
 
 
