@@ -15,7 +15,7 @@ def sort_by_price(row):
     tuples.sort(key=lambda tup: tup[1])
     recommendations = [x[0] for x in tuples]
     # list of recommendations to single string
-    recommendations = str(recommendations).strip('[]')
+    recommendations = str(recommendations).strip('[]').replace(",", "")
     return recommendations
 
 
