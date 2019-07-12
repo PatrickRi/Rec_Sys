@@ -9,11 +9,10 @@ def str_to_array(s) -> np.ndarray:
 def sort_by_price(row):
     impr = str_to_array(row["impressions"])
     prices = str_to_array(row["prices"])
-    tuples = []
+    tuples = [None] * len(impr)
     for i in range(len(impr)):
         tuples[i] = (impr[i], prices[i])
     tuples.sort(key=lambda tup: tup[1])
-    recommendations = []
     recommendations = [x[0] for x in tuples]
     # list of recommendations to single string
     recommendations = str(recommendations).strip('[]')
@@ -29,7 +28,7 @@ def calc_recommendation(df_train: pd.DataFrame, df_target: pd.DataFrame) -> pd.D
     :param df_target: Data frame with target
     :return: Data frame with sorted impression list according to price
     """
-    df_out = df_target[['user_id', 'session_id', 'timestamp', 'step', 'impressions']].copy()
-    df_out['item_recommendations'] = df_out['impressions'].apply(sort_by_price)
-    df_out.drop('impressions', axis=1, inplace=True)
+    df_tc = df_target.copy()
+    df_tc['item_recommendations'] = df_tc.apply(sort_by_price, axis=1)
+    df_out = df_tc[['user_id', 'session_id', 'timestamp', 'step', 'item_recommendations']]
     return df_out
