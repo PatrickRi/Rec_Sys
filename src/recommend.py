@@ -8,6 +8,7 @@ import verify_submission.functions as verification
 import baseline_algorithm.functions as bf
 import first_impression.first_impression as fimpr
 import price_ordered.price_ordered as cheapest
+import interactions.interactions as intrctn
 
 current_directory = Path(__file__).absolute().parent
 default_data_directory = current_directory.joinpath('..', 'data')
@@ -15,7 +16,7 @@ default_data_directory = current_directory.joinpath('..', 'data')
 
 @click.command()
 @click.option('--data-path', default=None, help='Directory for the CSV files')
-@click.option('--recommender', default='first_impression', help='Recommendation algorithm to be used')
+@click.option('--recommender', default='interactions', help='Recommendation algorithm to be used')
 def main(data_path: str, recommender: str):
     # calculate path to files
     data_directory = Path(data_path) if data_path else default_data_directory
@@ -24,7 +25,7 @@ def main(data_path: str, recommender: str):
     subm_csv = data_directory.joinpath('submission_' + recommender + '.csv')
 
     print(f"Reading {train_csv} ...")
-    df_train = pd.read_csv(train_csv)
+    df_train = None #pd.read_csv(train_csv)
     print(f"Reading {test_csv} ...")
     df_test = pd.read_csv(test_csv)
     print("Identify target rows...")
@@ -36,6 +37,8 @@ def main(data_path: str, recommender: str):
         df_out = fimpr.calc_recommendation(df_train, df_target)
     elif recommender == 'cheapest':
         df_out = cheapest.calc_recommendation(df_train, df_target)
+    elif recommender == 'interactions':
+        df_out = intrctn.calc_recommendation(df_train, df_target)
     else:
         raise Exception('algorithm ' + recommender + ' not implemented')
 
