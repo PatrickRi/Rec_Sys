@@ -27,7 +27,7 @@ def main(data_path: str, recommender: str):
     subm_csv = data_directory.joinpath('submission_' + recommender + '.csv')
 
     print(f"Reading {train_csv} ...")
-    df_train = None #pd.read_csv(train_csv)
+    df_train = pd.read_csv(train_csv)
     print(f"Reading {test_csv} ...")
     df_test = pd.read_csv(test_csv)
     print("Identify target rows...")

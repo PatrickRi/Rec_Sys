@@ -2,7 +2,7 @@ from pathlib import Path
 
 import click
 
-import functions as f
+import score_submission.functions as f
 
 current_directory = Path(__file__).absolute().parent
 default_data_directory = current_directory.joinpath('..', '..', 'data')
@@ -10,7 +10,7 @@ default_data_directory = current_directory.joinpath('..', '..', 'data')
 
 @click.command()
 @click.option('--data-path', default=None, help='Directory for the CSV files')
-@click.option('--submission-file', default='submission.csv', help='Submission CSV file')
+@click.option('--submission-file', default='submission_median.csv', help='Submission CSV file')
 @click.option('--ground-truth-file', default='ground_truth.csv', help='Ground truth CSV file')
 def main(data_path, submission_file, ground_truth_file):
 
