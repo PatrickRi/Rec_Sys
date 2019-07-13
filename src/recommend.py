@@ -20,8 +20,8 @@ default_data_directory = current_directory.joinpath('..', 'data')
 def main(data_path: str, recommender: str):
     # calculate path to files
     data_directory = Path(data_path) if data_path else default_data_directory
-    train_csv = data_directory.joinpath('train.csv')
-    test_csv = data_directory.joinpath('test.csv')
+    train_csv = data_directory.joinpath('train_split.csv')
+    test_csv = data_directory.joinpath('test_split.csv')
     subm_csv = data_directory.joinpath('submission_' + recommender + '.csv')
 
     print(f"Reading {train_csv} ...")
@@ -38,7 +38,8 @@ def main(data_path: str, recommender: str):
     elif recommender == 'cheapest':
         df_out = cheapest.calc_recommendation(df_train, df_target)
     elif recommender == 'interactions':
-        df_out = intrctn.calc_recommendation(df_train, df_target)
+        # use original test df as "training data"
+        df_out = intrctn.calc_recommendation(df_test, df_target)
     else:
         raise Exception('algorithm ' + recommender + ' not implemented')
 

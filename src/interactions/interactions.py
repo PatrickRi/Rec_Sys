@@ -17,15 +17,14 @@ def sort_by_interaction(row, lookup_series: pd.Series):
     recommendations = []
     # first add all interactions
     for i in interactions:
-        if i in impressions:
-            recommendations.append(i)
+        if i != 'unknown' and int(i) in impressions and int(i) not in recommendations:
+            recommendations.append(int(i))
     # add all other impressions left in order
     for impr in impressions:
         if impr not in recommendations:
             recommendations.append(impr)
     # list of recommendations to single string
-    recommendations = str(recommendations).strip('[]')
-    recommendations = " ".join(recommendations.split())
+    recommendations = str(recommendations).replace(",", "").strip('[]')
     return recommendations
 
 
@@ -52,7 +51,7 @@ def calc_recommendation(df_train: pd.DataFrame, df_target: pd.DataFrame) -> pd.D
     :param df_target: Data frame with target
     :return: Data frame with sorted impression list according to interactions
     """
-    lookup_series = get_lookup_series(df_target)
+    lookup_series = get_lookup_series(df_train)
     df_tc = df_target.copy()
     df_tc['item_recommendations'] = df_tc.apply(lambda x: sort_by_interaction(x, lookup_series), axis=1)
     df_out = df_tc[['user_id', 'session_id', 'timestamp', 'step', 'item_recommendations']]
