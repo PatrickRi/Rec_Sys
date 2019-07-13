@@ -32,6 +32,7 @@ def get_lookup_series(df_source: pd.DataFrame) -> pd.Series:
     df = df_source.copy()
     df['user_session'] = df['user_id'] + df['session_id']
     df_interacted = df[(df['action_type'] == 'interaction item image') | (
+            df['action_type'] == 'search for item') | (
             df['action_type'] == 'interaction item rating') | (
                                       df['action_type'] == 'interaction item info') | (
                                       df['action_type'] == 'interaction item deals')]

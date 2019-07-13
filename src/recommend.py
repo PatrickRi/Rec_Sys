@@ -8,7 +8,9 @@ import verify_submission.functions as verification
 import baseline_algorithm.functions as bf
 import first_impression.first_impression as fimpr
 import price_ordered.price_ordered as cheapest
+import price_median.price_median as prmedian
 import interactions.interactions as intrctn
+
 
 current_directory = Path(__file__).absolute().parent
 default_data_directory = current_directory.joinpath('..', 'data')
@@ -16,7 +18,7 @@ default_data_directory = current_directory.joinpath('..', 'data')
 
 @click.command()
 @click.option('--data-path', default=None, help='Directory for the CSV files')
-@click.option('--recommender', default='interactions', help='Recommendation algorithm to be used')
+@click.option('--recommender', default='median', help='Recommendation algorithm to be used')
 def main(data_path: str, recommender: str):
     # calculate path to files
     data_directory = Path(data_path) if data_path else default_data_directory
@@ -37,6 +39,8 @@ def main(data_path: str, recommender: str):
         df_out = fimpr.calc_recommendation(df_train, df_target)
     elif recommender == 'cheapest':
         df_out = cheapest.calc_recommendation(df_train, df_target)
+    elif recommender == 'median':
+        df_out = prmedian.calc_recommendation(df_train, df_target)
     elif recommender == 'interactions':
         # use original test df as "training data"
         df_out = intrctn.calc_recommendation(df_test, df_target)
