@@ -11,6 +11,7 @@ import price_ordered.price_ordered as cheapest
 import price_median.price_median as prmedian
 import interactions.interactions as intrctn
 import current_filter.current_filter_inout as currfilterinout
+import als_icf.als_icf as als_icf
 
 
 current_directory = Path(__file__).absolute().parent
@@ -19,7 +20,7 @@ default_data_directory = current_directory.joinpath('..', 'data')
 
 @click.command()
 @click.option('--data-path', default=None, help='Directory for the CSV files')
-@click.option('--recommender', default='currfilterinout', help='Recommendation algorithm to be used')
+@click.option('--recommender', default='interactions', help='Recommendation algorithm to be used')
 def main(data_path: str, recommender: str):
     # calculate path to files
     data_directory = Path(data_path) if data_path else default_data_directory
@@ -47,6 +48,12 @@ def main(data_path: str, recommender: str):
         df_out = intrctn.calc_recommendation(df_test, df_target)
     elif recommender == 'currfilterinout':
         df_out = currfilterinout.calc_recommendation(df_train, df_target)
+    elif recommender == "als_icf":
+        # TODO:
+        # alf_icf needs information about all users to build a model,
+        # therefore you need to pass the whole training set (before splitting it)
+        # to the algorithm, e.g. read train.csv into df_train instead of train_split.csv
+        df_out = als_icf.calc_recommendation(df_train, df_target)
     else:
         raise Exception('algorithm ' + recommender + ' not implemented')
 
